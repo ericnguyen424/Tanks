@@ -1,6 +1,6 @@
 package wipcode;
 import java.util.Hashtable;
-public class Tanks {
+public class  Tanks {
     public Tanks() {
 
     }
