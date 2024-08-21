@@ -146,12 +146,15 @@ public class Control implements Runnable, KeyListener, ActionListener {
 
             //if a player has shot
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                //if left player shot, spawn a shot from left tank
                 if (this.leftPlayerTurn) {
                     gameState.addGameObject(tanks[0].spawnShot());
-                } else {
+                } else { //right player shot, spawn a shot from right tank
                     gameState.addGameObject(tanks[1].spawnShot());
                 }
+                //reverse the turns
                 this.leftPlayerTurn = !leftPlayerTurn;
+                //spawn in a new wind
             }
         }
 
@@ -170,7 +173,7 @@ public class Control implements Runnable, KeyListener, ActionListener {
         //If the gameObject is a tankShot, increment timeElapsed
         //if the tankShot has expired, remove it
         if (gameState.peekGameObjects() instanceof TankShot) {
-            ((TankShot) go).incrementTimeElapsed(0.05);
+            ((TankShot) go).incrementTimeElapsed(.05);
             if (((TankShot) go).hasExpired()) {
                 gameState.removeGameObject();
                 for (Tank tank : tanks) {
@@ -199,6 +202,7 @@ public class Control implements Runnable, KeyListener, ActionListener {
 
                         }
                     }
+                    gameState.newWind();
                     tank.setIsShooting(false);
                 }
 
@@ -212,6 +216,10 @@ public class Control implements Runnable, KeyListener, ActionListener {
                 timer.stop();
                 startRound();
             }
+        }
+
+        if (gameState.getRightPlayerPoints() == 5 || gameState.getLeftPlayerPoints() == 5) {
+            System.out.println("A player has won!!");
         }
         gui.repaint();
     }

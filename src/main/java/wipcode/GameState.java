@@ -14,6 +14,7 @@ public class GameState {
     private Control control;
     private GUI gui;
     private int rightPlayerPoints, leftPlayerPoints;
+    private Wind wind;
 
     public GameState(Control control) {
         this.control = control;
@@ -21,7 +22,22 @@ public class GameState {
         rightPlayerPoints = 0;
         leftPlayerPoints = 0;
         gui = null;
+        this.wind = new Wind(this);
+    }
 
+    /**
+     * When called, this function generates a new wind for gameState
+     */
+    public void newWind() {
+        this.wind = new Wind(this);
+    }
+
+    /**
+     * Accessor for wind
+     * @return
+     */
+    public Wind getWind() {
+        return this.wind;
     }
 
     /**

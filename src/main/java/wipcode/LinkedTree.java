@@ -184,7 +184,7 @@ public class LinkedTree {
      */
     public TerrainBlock search(int key) {
         if (key < 0 || key > 1000) {
-            throw new IllegalArgumentException("Key out of range!");
+            throw new IllegalArgumentException("Key " + key + " is out of range!");
         }
 
         key = key - (key % 100);
@@ -235,7 +235,7 @@ public class LinkedTree {
             returnList[1] = n.value;
         }
 
-        if (key == 0) {
+        if (key - 1 < 0) {
             returnList[0] = null;
         } else {
             returnList[0] = search(key - 1);

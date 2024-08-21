@@ -5,13 +5,14 @@ import java.awt.*;
 
 public class GUI extends JPanel {
     // Instance fields
-    Control control;
-    GameState gameState;
+    private Control control;
+    private GameState gameState;
+    private JFrame frame;
     public GUI (Control control) {
         this.control = control;
         this.gameState = null;
 
-        JFrame frame = new JFrame("Tanks");
+        frame = new JFrame("Tanks");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(this);
@@ -51,7 +52,7 @@ public class GUI extends JPanel {
             }
             g.drawString("Right Player Points: " + gameState.getRightPlayerPoints(), 0, 10);
             g.drawString("Left Player Points: " + gameState.getLeftPlayerPoints(), 0, 30);
-
+            gameState.getWind().paintComponent(g);
         }
 
     }

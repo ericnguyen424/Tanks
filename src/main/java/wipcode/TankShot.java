@@ -11,8 +11,8 @@ import java.awt.geom.Ellipse2D;
 public class TankShot implements GameObject {
 
     //Field Variables
-    private int x, y;
-    private double timeElapsed, initVelocityX, initVelocityY;
+    private double initialX, initialY, currentX, currentY;
+    private double motionMultiplier, initVelocityX, initVelocityY;
     private boolean hasExpired;
     private GameState gameState;
     private Control control;
@@ -25,32 +25,45 @@ public class TankShot implements GameObject {
     public TankShot(int x, int y, int power, int angle, GameState gameState, Control control) {
         this.gameState = gameState;
         this.control = control;
-        this.x = x;
-        this.y = y;
-        timeElapsed = 0.0;
+        this.currentX = x;
+        this.currentY = y;
+        this.initialX = x;
+        this.initialY = y;
+        motionMultiplier = 0.0;
         hasExpired = false;
         this.initVelocityX = power * Math.cos(Math.toRadians(angle));
         this.initVelocityY = power * Math.sin(Math.toRadians(angle));
     }
 
     /**
-     * Increments timeElapsed by param
-     * @param timeElapsed
+     * Increments motionMultiplier by param
+     * @param motionMultiplierIncrement
      */
-    public void incrementTimeElapsed(double timeElapsed) {
-
-        this.timeElapsed += timeElapsed;
+    public void incrementTimeElapsed(double motionMultiplierIncrement) {
+        this.motionMultiplier += motionMultiplierIncrement;
         //Update X and Y
-        double currentX = x + (initVelocityX * this.timeElapsed);
-        double currentY = y + (-initVelocityY * this.timeElapsed) - (-0.5)*(9.8*this.timeElapsed*this.timeElapsed);
+        currentX = initialX + (initVelocityX * this.motionMultiplier);
+        currentY = initialY + (-initVelocityY * this.motionMultiplier) - (-0.5)*(9.8*this.motionMultiplier*this.motionMultiplier);
 
+
+        //if the motionMultiplier is higher than 0.2, start adding wind
+        if (motionMultiplier > 0.2) {
+            currentX += gameState.getWind().getXVelocity() * motionMultiplier;
+            currentY -=  gameState.getWind().getYVelocity() * motionMultiplier;
+        }
         TerrainBlock[] nearbyBlocks = control.getCurrentTerrain().findNearest((int) currentX, gameState.getGui());
-
+        //This for loop analyzes the LEFTMOST | MIDDLE | RIGHTMOST blocks
         for (TerrainBlock block : nearbyBlocks) {
-            //if the shot leaves the screen or hits a block, expire it
-            if (block == null) {
+            //If the tankShot is above the screen but leaves the border, expire it
+             if (currentY <= 0 && (currentX >= gameState.getGui().getWidth() || currentX <= 0)) {
+                this.setHasExpired(true);
+                return;
+            }
+            //if the current block is null, check if the block has hit the ground
+            else if (block == null) {
                 //Run if the tankShot is not above the screen
                 if (currentY > 0) {
+                    //if the tankShot has left the screen
                     if (gameState.leavesScreen(this.getArea())) {
                         this.setHasExpired(true);
                         return;
@@ -58,6 +71,7 @@ public class TankShot implements GameObject {
                 }
 
             }
+            //If the current block exists, check if the tankShot intersects with it
             else if (gameState.intersects(this.getArea(), block.getArea())) {
                 this.setHasExpired(true);
                 return;
@@ -65,7 +79,7 @@ public class TankShot implements GameObject {
         }
         //if the shot intersects with any tank, expire it
         for (Tank tank : control.getTanks()) {
-            if (gameState.intersects(this.getArea(), tank.getArea()) && this.timeElapsed > 0.2) {
+            if (gameState.intersects(this.getArea(), tank.getArea()) && this.motionMultiplier > 0.2) {
                 tank.setHasExpired(true);
                 this.setHasExpired(true);
                 return;
@@ -82,22 +96,11 @@ public class TankShot implements GameObject {
         this.hasExpired = status;
     }
 
-    /**Setter for x
-     * @return
-     */
-    public void setX(int x) { this.x = x; }
-    /**Setter for y
-     * @return
-     */
-    public void setY(int y) { this.y = y; }
-    /**Getter for x
-     * @return
-     */
-    public int getX() { return this.x; }
+    public double getX() { return this.currentX; }
     /**Getter for y
      * @return
      */
-    public int getY() { return this.y; }
+    public double getY() { return this.currentY; }
     @Override
     public void paintComponent(Graphics g) {
 
@@ -118,8 +121,8 @@ public class TankShot implements GameObject {
      * @return
      */
     public Area getArea() {
-        Shape cannonBall = new Ellipse2D.Double(x + (initVelocityX * timeElapsed),
-                y + (-initVelocityY * timeElapsed) - (-0.5)*(9.8*timeElapsed*timeElapsed), 10, 10);
+        Shape cannonBall = new Ellipse2D.Double(currentX,
+                currentY, 10, 10);
         return new Area(cannonBall);
     }
 
