@@ -33,6 +33,15 @@ public class GUI extends JPanel {
         repaint();
     }
 
+
+    /**
+     * Accessor for JFrame
+     * @return
+     */
+    public JFrame getFrame() {
+        return this.frame;
+    }
+
     /**
      * Setter for gameState
      * @param gameState

@@ -31,6 +31,7 @@ public class Control implements Runnable, KeyListener, ActionListener {
             gui.addKeyListener(this);
             this.tanks = new Tank[2];
             timer = new Timer(5, this);
+            gameState.openInstructions(gui.getFrame());
 
     }
 

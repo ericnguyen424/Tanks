@@ -1,5 +1,6 @@
 package wipcode;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -30,6 +31,18 @@ public class GameState {
      */
     public void newWind() {
         this.wind = new Wind(this);
+    }
+
+    /**
+     * When called, this function will open a panel that provides the instructions
+     * @param parentFrame
+     */
+    public void openInstructions(JFrame parentFrame) {
+        JDialog instructionPanel = new JDialog(parentFrame, "Instructions", true);
+        instructionPanel.setSize(200, 200);
+        instructionPanel.setLocationRelativeTo(parentFrame);
+
+        instructionPanel.setVisible(true);
     }
 
     /**
