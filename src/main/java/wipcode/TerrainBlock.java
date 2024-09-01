@@ -5,7 +5,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 
 public class TerrainBlock implements GameObject {
-    private int x, y, height, width;
+    private int x, y, height, width, frameHeight;
 
     /**
      * Constructor
@@ -14,7 +14,7 @@ public class TerrainBlock implements GameObject {
      * @param height
      * @param width
      */
-    public TerrainBlock(int x, int y, int height, int width) {
+    public TerrainBlock(int x, int y, int height, int width, int frameHeight) {
         this.x = x;
         this.y = y;
         this.height = height;
@@ -52,7 +52,7 @@ public class TerrainBlock implements GameObject {
      * @return
      */
     public Area getArea() {
-        Shape block = new Rectangle2D.Double(x, 800 - y - height, width, height);
+        Shape block = new Rectangle2D.Double(x, frameHeight - y - height, width, height);
         return new Area(block);
     }
 

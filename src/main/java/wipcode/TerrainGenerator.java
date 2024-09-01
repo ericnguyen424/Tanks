@@ -13,7 +13,7 @@ public class TerrainGenerator {
      * @return
      */
     public LinkedTree generateTerrain() {
-        offScreenBlock = new TerrainBlock(0, -10, 10, this.gameState.getGui().getWidth());
+        offScreenBlock = new TerrainBlock(0, -10, 10, this.gameState.getGui().getWidth(), gameState.getGui().getHeight());
         LinkedTree returnTree = new LinkedTree();
         //I want to generate 5 random blocks on the terrain.
         //for loop that loops 5 times
@@ -28,9 +28,9 @@ public class TerrainGenerator {
             //generate random y coordinate
             int height = random.nextInt(1, 7);
             height *= 100;
-            TerrainBlock newBlock = new TerrainBlock(x, 0, height, 100);
+            TerrainBlock newBlock = new TerrainBlock(x, 0, height, 100, gameState.getGui().getHeight());
             returnTree.insert(x, newBlock); //add to the binary tree
-            //add a new terrainblock to gameObjects
+            //add a new terrain block to gameObjects
             gameState.addGameObject(newBlock);
 
         }
